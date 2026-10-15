@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: pgmzchat-beta6
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install --prefix server --omit=dev
+    startCommand: node server/server.mjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PGMZCHAT_ADMIN_TOKEN
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pgmzchat-beta6-db
+          property: connectionString
+
+databases:
+  - name: pgmzchat-beta6-db
+    databaseName: pgmzchat
+    user: pgmzchat
+    plan: free
+    region: frankfurt
+    ipAllowList: []
