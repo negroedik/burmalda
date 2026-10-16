@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const app = await readFile(path.join(root, 'client/app.js'), 'utf8');
+const manifest = await readFile(path.join(root, 'android/app/src/main/AndroidManifest.xml'), 'utf8');
+const service = await readFile(path.join(root, 'android/app/src/main/java/com/pgmzchat/app/BackgroundConnectionService.java'), 'utf8');
+const activity = await readFile(path.join(root, 'android/app/src/main/java/com/pgmzchat/app/MainActivity.java'), 'utf8');
+assert(app.includes("state.meshTimer = setInterval(() => { if (state.authToken) void announcePresence(); }, 7000)"), 'P2P presence must refresh while the WebView is backgrounded');
+assert(app.includes('// startMesh owns the single presence timer; avoid duplicate requests.'), 'presence must use one timer to avoid unnecessary duplicate requests');
+assert(app.includes("state.callPollTimer=setInterval(()=>{if(state.authToken)pollCallSignals();},1500)"), 'WebRTC signaling must be polled when app is backgrounded');
+assert(manifest.includes('android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING') && manifest.includes('android:foregroundServiceType="remoteMessaging|connectedDevice"'), 'manifest must configure connected-device foreground service');
+assert(service.includes('FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING') && service.includes('FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE') && service.includes('setOngoing(true)') && service.includes('START_STICKY') && service.includes('onTaskRemoved'), 'background service must run persistently while active and stop when its WebView task is dismissed');
+assert(activity.includes('startForegroundService(service)') && activity.includes('setBackgroundConnectionEnabled(boolean enabled)'), 'native bridge must control the background service');
+assert(app.includes('setBackgroundConnectionEnabled?.(canKeepConnection)'), 'client must keep the service active only for authenticated P2P sessions');
+console.log('PASS: background presence, signaling, and Android foreground-service checks');

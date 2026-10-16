@@ -1,0 +1,26 @@
+[Unit]
+Description=PgmzChat anonymous messenger API (release candidate)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pgmzchat
+Group=pgmzchat
+WorkingDirectory=/opt/pgmzchat/server
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=8080
+EnvironmentFile=-/etc/pgmzchat.env
+ExecStart=/usr/bin/node /opt/pgmzchat/server/server.mjs
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/pgmzchat/server/data
+
+[Install]
+WantedBy=multi-user.target

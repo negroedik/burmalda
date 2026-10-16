@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>PgmzChat — локальная админка</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#e8edf5;background:#10141b;font-synthesis:none;text-rendering:optimizeLegibility;--panel:#191f29;--line:#303949;--muted:#9ba7ba;--accent:#a8c7ff;--danger:#ffb4ab;--ok:#7dd9b1}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top right,#1d2c43 0,transparent 45%),#10141b}.wrap{width:min(1160px,100%);margin:auto;padding:28px 18px 64px}.top{display:flex;align-items:center;gap:14px;margin-bottom:24px}.logo{width:46px;height:46px;border-radius:14px;background:#e8edf5;color:#111820;display:grid;place-items:center;font-weight:900;font-size:20px}.top h1{font-size:22px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:5px}.badge{margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:16px}.panel{background:rgba(25,31,41,.95);border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0}.panel h2{font-size:16px;margin:0 0 15px}.field{display:grid;gap:7px;margin:13px 0}.field label{color:var(--muted);font-size:12px}.field input{width:100%;background:#0e131a;color:#f2f5fa;border:1px solid #384457;border-radius:10px;padding:12px 12px;font:inherit;outline:none}.field input:focus{border-color:var(--accent)}.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0}.row .field{flex:1}.btn{border:1px solid #46536a;border-radius:10px;padding:10px 13px;color:#e8edf5;background:#252e3b;font:600 13px inherit;cursor:pointer}.btn:hover{filter:brightness(1.12)}.btn:disabled{opacity:.5;cursor:wait}.btn.primary{background:var(--accent);color:#102039;border-color:var(--accent)}.btn.danger{border-color:#854b4d;color:#ffd9d4;background:#3a2027}.btn.safe{border-color:#2c6b55;color:#c2f5df;background:#18352e}.hint{font-size:12px;line-height:1.55;color:var(--muted)}.notice{font-size:13px;line-height:1.5;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-top:12px;overflow-wrap:anywhere}.notice.ok{border-color:#285c4b;color:var(--ok)}.notice.err{border-color:#704144;color:var(--danger)}.notice.warn{color:#e9d6a0}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}.toolbar input{flex:1;min-width:140px;background:#0e131a;color:#f2f5fa;border:1px solid #384457;border-radius:10px;padding:11px;font:inherit}.statline{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.stat{border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex:1;min-width:100px}.stat strong{display:block;font-size:21px}.stat span{font-size:11px;color:var(--muted)}.device-list{display:grid;gap:10px}.device{border:1px solid var(--line);border-radius:13px;padding:13px;display:grid;gap:10px}.device-head{display:flex;gap:10px;align-items:flex-start}.device-title{font-weight:700;overflow-wrap:anywhere}.status{font-size:11px;border-radius:999px;padding:4px 8px;margin-left:auto;white-space:nowrap;background:#243e34;color:#a9e8ce}.status.banned{background:#47272b;color:#ffb9b2}.meta{display:grid;grid-template-columns:110px minmax(0,1fr);gap:5px 10px;font-size:12px}.meta .k{color:var(--muted)}.meta .v{overflow-wrap:anywhere}.device-actions{display:flex;gap:7px;flex-wrap:wrap}.empty{border:1px dashed #455166;border-radius:13px;padding:26px;text-align:center;color:var(--muted);font-size:13px}.foot{margin-top:18px;font-size:12px;line-height:1.6;color:var(--muted)}code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;overflow-wrap:anywhere}@media(max-width:780px){.grid{grid-template-columns:1fr}.badge{display:none}.wrap{padding:18px 12px 48px}.panel{padding:14px}.meta{grid-template-columns:88px minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top"><div class="logo">P</div><div><h1>PgmzChat · панель администратора</h1><div class="sub">Отдельный локальный HTML-файл · версия Beta6</div></div><div class="badge">Токен не сохраняется</div></header>
+  <div class="grid">
+    <section class="panel" aria-labelledby="connectTitle">
+      <h2 id="connectTitle">Подключение к серверу</h2>
+      <div class="field"><label for="serverUrl">Адрес сервера PgmzChat</label><input id="serverUrl" type="url" inputmode="url" placeholder="https://имя-сервиса.onrender.com" autocomplete="url"></div>
+      <div class="field"><label for="adminToken">PGMZCHAT_ADMIN_TOKEN</label><input id="adminToken" type="password" placeholder="Вставь секрет из настроек сервиса" autocomplete="off" spellcheck="false"></div>
+      <div class="row"><button id="connectBtn" class="btn primary">Проверить и загрузить устройства</button><button id="clearBtn" class="btn" title="Очистить секреты">Очистить</button></div>
+      <div id="notice" class="notice warn" role="status" aria-live="polite">Укажи HTTPS-адрес сервера и административный токен.</div>
+      <div class="foot"><strong>Безопасность.</strong> Токен используется только в текущей открытой вкладке: этот файл не сохраняет его в localStorage/cookies и не отправляет никуда, кроме указанного сервера. Не размещай этот HTML вместе с публичными файлами сайта.</div>
+    </section>
+    <section class="panel" aria-labelledby="devicesTitle">
+      <h2 id="devicesTitle">Устройства и блокировки</h2>
+      <div class="statline"><div class="stat"><strong id="totalCount">—</strong><span>Устройств</span></div><div class="stat"><strong id="bannedCount">—</strong><span>Заблокировано</span></div><div class="stat"><strong id="dbMode">—</strong><span>Хранилище аккаунтов</span></div></div>
+      <div class="toolbar"><input id="filterInput" placeholder="Фильтр по коду, аккаунту или статусу" aria-label="Фильтр устройств"><button id="refreshBtn" class="btn" disabled>Обновить</button><button id="exportBtn" class="btn" disabled>Экспорт JSON</button></div>
+      <div id="deviceList" class="device-list"><div class="empty">Сначала подключись к серверу, чтобы загрузить список устройств.</div></div>
+    </section>
+  </div>
+  <p class="foot">Панель предназначена для временного управления кодами устройств. Блокировка действует на зарегистрированный код устройства; это не абсолютный hardware ID — переустановка, очистка данных или изменённый клиент могут дать новый код. Панель не читает сообщения, фотографии, пароли и историю чатов: сервер их не хранит.</p>
+</main>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+let currentDevices = [];
+let baseUrl = '';
+let adminToken = '';
+function setNotice(text, kind='warn') {
+  const el=$('notice'); el.textContent=text; el.className=`notice ${kind}`;
+}
+function normalizeBaseUrl(raw) {
+  const u=new URL(String(raw||'').trim());
+  const local=['localhost','127.0.0.1','::1'].includes(u.hostname);
+  if (u.protocol!=='https:' && !(local && u.protocol==='http:')) throw new Error('Для внешнего сервера нужен HTTPS. HTTP разрешён только для localhost.');
+  if (u.username || u.password) throw new Error('Не вставляй логин/пароль в адрес сервера.');
+  return u.origin;
+}
+async function request(path, options={}) {
+  const response=await fetch(`${baseUrl}${path}`,{cache:'no-store',...options,headers:{Accept:'application/json',...(options.headers||{}),'X-Admin-Token':adminToken}});
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok) {
+    const friendly=response.status===403?'Токен неверный или доступ запрещён.':response.status===503?'Админ-API выключен: задай PGMZCHAT_ADMIN_TOKEN в настройках сервиса.':`HTTP ${response.status}`;
+    throw new Error(payload.message||payload.error||friendly);
+  }
+  return payload;
+}
+function textNode(value){return String(value===undefined||value===null?'—':value)}
+function formatDate(value){if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?textNode(value):d.toLocaleString('ru-RU')}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function visibleDevices(){const q=$('filterInput').value.trim().toLowerCase();return currentDevices.filter(d=>!q||[d.deviceCode,d.deviceLabel,d.banReason,...(d.accountIds||[])].some(v=>String(v||'').toLowerCase().includes(q))||(d.banned?'заблокировано':'активно').includes(q));}
+function renderDevices(){
+ const list=$('deviceList'),devices=visibleDevices();
+ $('totalCount').textContent=currentDevices.length;
+ $('bannedCount').textContent=currentDevices.filter(d=>d.banned).length;
+ $('refreshBtn').disabled=!adminToken||!baseUrl;$('exportBtn').disabled=!currentDevices.length;
+ if(!devices.length){list.innerHTML='<div class="empty">'+(currentDevices.length?'Ничего не найдено по этому фильтру.':'Список пуст: пока сервер не видел зарегистрированных устройств.')+'</div>';return;}
+ list.innerHTML=devices.map(d=>{
+  const code=escapeHtml(d.deviceCode),status=d.banned?'<span class="status banned">Заблокировано</span>':'<span class="status">Активно</span>';
+  const accounts=Array.isArray(d.accountIds)?d.accountIds:[];
+  const action=d.banned?`<button class="btn safe" data-action="unban" data-code="${code}">Разблокировать устройство</button>`:`<button class="btn danger" data-action="ban" data-code="${code}">Заблокировать устройство</button>`;
+  return `<article class="device"><div class="device-head"><div><div class="device-title">${escapeHtml(d.deviceLabel||'Устройство')}</div><code>${code}</code></div>${status}</div><div class="meta"><span class="k">Аккаунты</span><span class="v">${accounts.length?accounts.map(escapeHtml).join('<br>'):'—'}</span><span class="k">Впервые</span><span class="v">${escapeHtml(formatDate(d.firstSeen))}</span><span class="k">Последняя активность</span><span class="v">${escapeHtml(formatDate(d.lastSeen))}</span><span class="k">Причина блокировки</span><span class="v">${escapeHtml(d.banReason||'—')}</span></div><div class="device-actions">${action}<button class="btn" data-action="copy" data-code="${code}">Копировать код</button></div></article>`;
+ }).join('');
+}
+async function connect(){
+ $('connectBtn').disabled=true;
+ try{
+  const nextUrl=normalizeBaseUrl($('serverUrl').value),nextToken=$('adminToken').value.trim();
+  if(!nextToken)throw new Error('Введи административный токен.');
+  baseUrl=nextUrl;adminToken=nextToken;
+  const healthResponse=await fetch(`${baseUrl}/api/health`,{cache:'no-store'});
+  const health=await healthResponse.json().catch(()=>({}));
+  if(!healthResponse.ok||health.status!=='ok')throw new Error('Сервер не прошёл проверку /api/health.');
+  const data=await request('/api/admin/devices');
+  currentDevices=Array.isArray(data.devices)?data.devices:[];
+  $('dbMode').textContent=health.persistence==='postgresql'?'PostgreSQL':'JSON-файл';
+  setNotice(`Подключение успешно. ${currentDevices.length} устройств; учётные данные: ${health.persistence==='postgresql'?'PostgreSQL':'локальные JSON-файлы'}.`, 'ok');
+  renderDevices();
+ }catch(e){baseUrl='';adminToken='';currentDevices=[];renderDevices();setNotice(e.message||'Не удалось подключиться. Проверь адрес и токен.','err');}
+ finally{$('connectBtn').disabled=false;}
+}
+async function refresh(){if(!baseUrl||!adminToken)return; $('refreshBtn').disabled=true;try{const data=await request('/api/admin/devices');currentDevices=Array.isArray(data.devices)?data.devices:[];renderDevices();setNotice(`Список обновлён: ${currentDevices.length} устройств.`,'ok');}catch(e){setNotice(e.message||'Ошибка обновления.','err');}finally{$('refreshBtn').disabled=false;}}
+async function handleDeviceAction(button){const action=button.dataset.action,code=button.dataset.code;if(action==='copy'){try{await navigator.clipboard.writeText(code);setNotice('Код устройства скопирован.','ok');}catch{setNotice('Браузер не дал доступ к буферу обмена. Выдели код вручную.','warn');}return;}if(action!=='ban'&&action!=='unban')return;
+ let reason='';if(action==='ban'){reason=prompt('Причина блокировки (видна только администратору):','спам / нарушение правил');if(reason===null)return;reason=reason.trim().slice(0,300)||'Заблокировано администратором';}
+ button.disabled=true;try{const enc=encodeURIComponent(code);await request(`/api/admin/devices/${enc}/${action}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(action==='ban'?{reason}:{})});await refresh();setNotice(action==='ban'?'Устройство заблокировано.':'Блокировка снята.','ok');}catch(e){setNotice(e.message||'Не удалось изменить статус устройства.','err');}finally{button.disabled=false;}}
+$('connectBtn').addEventListener('click',connect);$('refreshBtn').addEventListener('click',refresh);$('filterInput').addEventListener('input',renderDevices);
+$('clearBtn').addEventListener('click',()=>{baseUrl='';adminToken='';currentDevices=[];$('adminToken').value='';$('serverUrl').value='';$('totalCount').textContent='—';$('bannedCount').textContent='—';$('dbMode').textContent='—';renderDevices();setNotice('Секреты очищены из текущей вкладки.','warn');});
+$('deviceList').addEventListener('click',e=>{const button=e.target.closest('button[data-action]');if(button)handleDeviceAction(button);});
+$('exportBtn').addEventListener('click',()=>{const data=JSON.stringify(currentDevices.map(d=>({deviceCode:d.deviceCode,deviceLabel:d.deviceLabel,accountIds:d.accountIds,firstSeen:d.firstSeen,lastSeen:d.lastSeen,banned:d.banned,banReason:d.banReason,bannedAt:d.bannedAt})),null,2);const url=URL.createObjectURL(new Blob([data],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='pgmzchat-devices-export.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+window.addEventListener('pagehide',()=>{$('adminToken').value='';adminToken='';});
+</script>
+</body>
+</html>

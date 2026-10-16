@@ -1,0 +1,34 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.pgmzchat.app'
+    compileSdk 34
+
+    // AGP 8+ may disable BuildConfig generation unless explicitly enabled.
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        applicationId 'com.pgmzchat.app'
+        minSdk 23
+        targetSdk 34
+        versionCode 44
+        versionName '1.0_ALPHA1'
+    }
+
+    buildTypes {
+        debug {
+            // Keep debug builds unshrunk and easy to install/debug on Android phones.
+            // Gradle still signs assembleDebug output with the standard debug key.
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}

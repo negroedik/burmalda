@@ -1,0 +1,5 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+if command -v gradle >/dev/null 2>&1; then exec gradle "$@"; fi
+echo 'Gradle не найден. Выполни: pkg install gradle'
+exit 127
